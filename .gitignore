@@ -1,5 +1,9 @@
 __pycache__/
 *.py[cod]
 venv/
+.venv/
 .env
 data/
+docs/
+AGENTS.md
+README.md
