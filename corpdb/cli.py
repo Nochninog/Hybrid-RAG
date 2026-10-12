@@ -4,7 +4,8 @@ import argparse
 from pathlib import Path
 
 from corpdb.documents.errors import DocumentValidationError
-from corpdb.documents.validation import validate_document
+from corpdb.documents.operations import upload_document
+from corpdb.storage.errors import UploadError
 
 
 def main() -> int:
@@ -13,8 +14,8 @@ def main() -> int:
     args = parser.parse_args()
 
     try:
-        document = validate_document(args.file)
-    except (DocumentValidationError, OSError) as exc:
+        document, result = upload_document(args.file)
+    except (DocumentValidationError, UploadError, OSError) as exc:
         print(f"Ошибка: {exc}")
         return 1
 
@@ -22,5 +23,5 @@ def main() -> int:
     print(f"Путь: {document.path}")
     print(f"Расширение: {document.extension}")
     print(f"Размер: {document.size_bytes} байт")
-    print("Проверка пройдена. Сохранение оригинала ещё не подключено.")
+    print(result)
     return 0
