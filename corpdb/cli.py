@@ -7,6 +7,7 @@ from corpdb.documents.errors import DocumentValidationError
 from corpdb.documents.operations import upload_document
 from corpdb.storage.errors import UploadError
 
+from corpdb.database.errors import DatabaseError
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Check document")
@@ -14,8 +15,13 @@ def main() -> int:
     args = parser.parse_args()
 
     try:
-        document, result = upload_document(args.file)
-    except (DocumentValidationError, UploadError, OSError) as exc:
+        document, result, document_id = upload_document(args.file)
+    except (
+        DocumentValidationError,
+        UploadError,
+        DatabaseError,
+        OSError,
+    ) as exc:
         print(f"Ошибка: {exc}")
         return 1
 
@@ -24,4 +30,5 @@ def main() -> int:
     print(f"Расширение: {document.extension}")
     print(f"Размер: {document.size_bytes} байт")
     print(result)
+    print(document_id)
     return 0
