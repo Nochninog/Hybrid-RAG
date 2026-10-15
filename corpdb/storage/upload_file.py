@@ -13,10 +13,9 @@ def upload_file(file_path, bucket, file_name):
     try:
         s3 = create_client()
         with open(file_path, "rb") as f:
-            resp = s3.put_object(Bucket=bucket, Key=file_name, Body=f)
+            s3.put_object(Bucket=bucket, Key=file_name, Body=f)
 
-        version_id = resp.get("VersionId")
-        return {"bucket": bucket, "key": file_name, "version_id": version_id}
+        return {"bucket": bucket, "key": file_name}
     except EndpointConnectionError as e:
         raise UploadError("MinIO недоступен") from e
 
