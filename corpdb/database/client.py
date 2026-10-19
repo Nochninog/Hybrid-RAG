@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from contextlib import contextmanager
 
 from corpdb.database.errors import (
-    DatabaseCommitUnknownError,
+    DatabaseError,
     DatabaseWriteError,
 )
 
@@ -31,7 +31,7 @@ def transaction_connection():
             commit_started = True
     except psycopg.Error as exc:
         if commit_started:
-            raise DatabaseCommitUnknownError(
+            raise DatabaseError(
                 "Не удалось подтвердить сохранение метаданных. "
                 "Новый объект оставлен в MinIO до проверки."
             ) from exc

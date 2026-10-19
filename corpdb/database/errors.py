@@ -3,8 +3,4 @@ class DatabaseError(Exception):
 
 
 class DatabaseWriteError(DatabaseError):
-    """Запись завершилась ошибкой до подтверждения транзакции."""
-
-
-class DatabaseCommitUnknownError(DatabaseError):
-    """Не удалось подтвердить результат завершения транзакции."""
+    """Запись завершилась ошибкой до попытки commit."""
