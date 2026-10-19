@@ -9,13 +9,13 @@ from corpdb.storage.client import create_client
 from corpdb.storage.errors import UploadError
 
 
-def upload_file(file_path, bucket, file_name):
+def upload_file(file_path, bucket, storage_key):
     try:
         s3 = create_client()
         with open(file_path, "rb") as f:
-            s3.put_object(Bucket=bucket, Key=file_name, Body=f)
+            s3.put_object(Bucket=bucket, Key=storage_key, Body=f)
 
-        return {"bucket": bucket, "key": file_name}
+        return {"bucket": bucket, "key": storage_key}
     except EndpointConnectionError as e:
         raise UploadError("MinIO недоступен") from e
 
