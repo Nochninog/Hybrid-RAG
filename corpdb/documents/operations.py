@@ -1,7 +1,7 @@
 from pathlib import Path
 from uuid import uuid4
 
-from corpdb.database.documents import insert_document
+from corpdb.database.insert_document import insert_document
 from corpdb.documents.models import ValidatedDocument
 from corpdb.documents.validation import validate_document
 from corpdb.storage.upload_file import upload_file
