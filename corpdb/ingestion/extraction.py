@@ -7,10 +7,7 @@ from pypdf import PdfReader
 from pypdf.errors import PyPdfError
 import io
 
-def extraction_text(document_id, extension):
-    if extension not in {".txt", ".md", ".pdf"}:
-        raise ExtractionError(f"Извлечение текста из {extension} пока не поддерживается.")
-
+def read_document_bytes(document_id: int) -> bytes:
     storage_bucket, storage_key = read_document(document_id=document_id)
 
     response = download_file(bucket=storage_bucket, storage_key=storage_key)
@@ -18,9 +15,19 @@ def extraction_text(document_id, extension):
     body = response['Body']
     try:
         try:
-            content_bytes = body.read()
+            return body.read()
         finally:
             body.close()
+    except BotoCoreError as exc:
+        raise ExtractionError(f"Не удалось прочитать документ: {exc}") from exc
+
+
+def extraction_text(document_id, extension):
+    if extension not in {".txt", ".md", ".pdf"}:
+        raise ExtractionError(f"Извлечение текста из {extension} пока не поддерживается.")
+
+    content_bytes = read_document_bytes(document_id)
+    try:
         if extension == ".pdf":
             pdf_file = io.BytesIO(content_bytes)
             reader = PdfReader(pdf_file)
@@ -32,7 +39,7 @@ def extraction_text(document_id, extension):
                     content_text += text + "\n"
         else:
             content_text = content_bytes.decode('utf-8')
-    except (UnicodeDecodeError, PyPdfError, BotoCoreError) as exc:
+    except (UnicodeDecodeError, PyPdfError) as exc:
         raise ExtractionError(f"Не удалось извлечь текст: {exc}") from exc
 
     return content_text
