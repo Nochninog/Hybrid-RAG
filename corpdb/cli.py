@@ -9,6 +9,9 @@ from corpdb.storage.errors import UploadError
 
 from corpdb.database.errors import DatabaseError
 
+from corpdb.ingestion.operations import process_document
+from corpdb.ingestion.errors import ExtractionError
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Check document")
     parser.add_argument("file", type=Path, help="Путь к исходному документу")
@@ -16,19 +19,26 @@ def main() -> int:
 
     try:
         document, result, document_id = upload_document(args.file)
+
+        print(f"Файл: {document.original_filename}")
+        print(f"Путь: {document.path}")
+        print(f"Расширение: {document.extension}")
+        print(f"Размер: {document.size_bytes} байт")
+        print(result)
+        print(document_id)
+
+        chunks = process_document(document_id, extension=document.extension)
+        for chunk in chunks:
+            print(f"Фрагмент {chunk.position + 1} ({chunk.token_count} токенов):")
+            print(chunk.text)
     except (
         DocumentValidationError,
         UploadError,
         DatabaseError,
+        ExtractionError,
         OSError,
     ) as exc:
         print(f"Ошибка: {exc}")
         return 1
 
-    print(f"Файл: {document.original_filename}")
-    print(f"Путь: {document.path}")
-    print(f"Расширение: {document.extension}")
-    print(f"Размер: {document.size_bytes} байт")
-    print(result)
-    print(document_id)
     return 0
