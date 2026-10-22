@@ -43,7 +43,7 @@ def insert_document(
             cursor.execute(
                 """
                 UPDATE documents
-                SET storage_key = %s, size_bytes = %s
+                SET storage_key = %s, size_bytes = %s, active_index_run_id = NULL
                 WHERE id = %s
                 """,
                 (storage_key, size_bytes, document_id),
