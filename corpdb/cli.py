@@ -3,17 +3,20 @@
 import argparse
 from pathlib import Path
 
+from openai import OpenAIError
+from weaviate.exceptions import WeaviateBaseError
+
 from corpdb.documents.errors import DocumentValidationError
 from corpdb.documents.operations import upload_document
 from corpdb.storage.errors import UploadError
 
 from corpdb.database.errors import DatabaseError
 
-from corpdb.ingestion.operations import process_document
+from corpdb.ingestion.index_document import index_document
 from corpdb.ingestion.errors import ExtractionError
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Check document")
+    parser = argparse.ArgumentParser(description="Загрузка и индексация документа")
     parser.add_argument("file", type=Path, help="Путь к исходному документу")
     args = parser.parse_args()
 
@@ -27,15 +30,16 @@ def main() -> int:
         print(result)
         print(document_id)
 
-        chunks = process_document(document_id, extension=document.extension)
-        for chunk in chunks:
-            print(f"Фрагмент {chunk.position + 1} ({chunk.token_count} токенов):")
-            print(chunk.text)
+        index_run_id = index_document(document_id, extension=document.extension)
+        print(f"Индексация завершена. Метка набора: {index_run_id}")
     except (
         DocumentValidationError,
         UploadError,
         DatabaseError,
         ExtractionError,
+        OpenAIError,
+        WeaviateBaseError,
+        ValueError,
         OSError,
     ) as exc:
         print(f"Ошибка: {exc}")
