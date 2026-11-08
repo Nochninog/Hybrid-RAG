@@ -32,10 +32,10 @@ def transaction_connection():
     except psycopg.Error as exc:
         if commit_started:
             raise DatabaseError(
-                "Не удалось подтвердить сохранение метаданных. "
-                "Новый объект оставлен в MinIO до проверки."
+                "Не удалось подтвердить завершение транзакции PostgreSQL. "
+                "Проверьте результат перед повторной записью."
             ) from exc
 
         raise DatabaseWriteError(
-            "Не удалось записать метаданные в PostgreSQL."
+            "Не удалось выполнить операцию в PostgreSQL."
         ) from exc
