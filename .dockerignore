@@ -2,7 +2,7 @@
 !requirements.txt
 !requirements-api.txt
 !alembic.ini
-!corpdb/
-!corpdb/**
-corpdb/**/__pycache__/
-corpdb/**/*.pyc
+!backend/
+!backend/**
+backend/**/__pycache__/
+backend/**/*.pyc
