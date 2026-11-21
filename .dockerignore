@@ -1,0 +1,8 @@
+**
+!requirements.txt
+!requirements-api.txt
+!alembic.ini
+!corpdb/
+!corpdb/**
+corpdb/**/__pycache__/
+corpdb/**/*.pyc
