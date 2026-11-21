@@ -4,9 +4,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from corpdb.documents.errors import DocumentValidationError
-from corpdb.documents.policy import MAX_FILE_SIZE
-from corpdb.documents.validation import validate_document
+from backend.documents.errors import DocumentValidationError
+from backend.documents.policy import MAX_FILE_SIZE
+from backend.documents.validation import validate_document
 
 
 class DocumentValidationTests(unittest.TestCase):
